@@ -5,8 +5,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.HashMap;
 
-public class Serveur {
+public class Serveur extends Thread {
     private static final Logger LOGGER = Logger.getLogger(Serveur.class.getName());
 
     public static void main(String[] args) {
