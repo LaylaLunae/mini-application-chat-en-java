@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -29,23 +28,23 @@ public class Serveur {
         try{
             ServerSocket serverSocket = new ServerSocket(20000);
 
-            Socket clientSocket = serverSocket.accept();
+            while(true) {
+                Socket clientSocket = serverSocket.accept();
 
-            InputStream in = clientSocket.getInputStream();
-            byte[] lecture_pseudo = new byte[1024];
-            int longueur_pseudo = in.read(lecture_pseudo);
-            String pseudo = new String(lecture_pseudo, 0, longueur_pseudo);
+                InputStream in = clientSocket.getInputStream();
+                byte[] lecture_pseudo = new byte[1024];
+                int longueur_pseudo = in.read(lecture_pseudo);
+                String pseudo = new String(lecture_pseudo, 0, longueur_pseudo);
 
-            //mettre verification unicité pseudo
+                //mettre verification unicité pseudo
 
-            liste_clients.put(clientSocket, pseudo);
+                liste_clients.put(clientSocket, pseudo);
 
-            // Annoncer l'arrivée du nouveau client à tous
-            String message = "  " + pseudo + " a rejoint la conversation";
-            diffuserMessage(message);
+                String message = "    " + pseudo + " a rejoint la conversation";
+                diffuserMessage(message);
 
-            while (true) {
-
+                MessageGestion message_gestion = new MessageGestion(clientSocket, pseudo);
+                message_gestion.start();
             }
 
         } catch (IOException e) {
