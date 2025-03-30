@@ -18,20 +18,21 @@ public class MessageTransmitter extends Thread {
             Scanner sc = new Scanner(System.in);
             String message;
 
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 message = sc.nextLine();
                 out.write(message.getBytes());
-
-                if (message.equalsIgnoreCase("exit")) {
-                    client.close();
-                    System.exit(0);
-                    break;
-                }
             }
-
         }
         catch (IOException e) {
             Logger.getLogger(MessageTransmitter.class.getName()).log(Level.SEVERE, "Erreur", e);
+        }
+        finally {
+            try {
+                client.close();
+            }catch(IOException e){
+                Logger.getLogger(MessageGestion.class.getName()).log(Level.SEVERE, "Erreur", e);
+            }
+            interrupt();
         }
     }
 }
