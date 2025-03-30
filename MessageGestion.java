@@ -16,6 +16,20 @@ public class MessageGestion extends Thread {
         this.pseudo = pseudo;
     }
 
+    public void deconnecterClient() {
+        try {
+            Serveur.liste_clients.remove(client);
+            String exitMessage = "   " + pseudo + " a quitté la conversation";
+            Serveur.diffuserMessage(exitMessage);
+
+            client.getOutputStream().close();
+            client.getInputStream().close();
+            client.close();
+        }catch(IOException e){
+            Logger.getLogger(MessageGestion.class.getName()).log(Level.SEVERE, "Erreur", e);
+        }
+    }
+
     @Override
     public void run() {
         try {
@@ -28,23 +42,27 @@ public class MessageGestion extends Thread {
 
             while (client_connecte) {
                 longueur_message = in.read(stockage_message);
-                message_recu = new String(stockage_message, 0, longueur_message);
-
-                if (message_recu.equalsIgnoreCase("exit")) {
-                    Serveur.liste_clients.remove(client);
-                    String exitMessage = "   " + pseudo + " a quitté la conversation";
-                    Serveur.diffuserMessage(exitMessage);
+                if (longueur_message==-1) {
                     client_connecte = false;
+                    deconnecterClient();
                 }
-                else {
-                    message_a_envoye = "    " + pseudo + " a dit : " + message_recu;
-                    Serveur.diffuserMessage(message_a_envoye);
+                else{
+                    message_recu = new String(stockage_message, 0, longueur_message);
+                    if (message_recu.equalsIgnoreCase("exit")) {
+                        client_connecte = false;
+                        deconnecterClient();
+                    } else {
+                        message_a_envoye = "    " + pseudo + " a dit : " + message_recu;
+                        Serveur.diffuserMessage(message_a_envoye);
+                    }
                 }
             }
-
-            client.close();
         } catch (IOException e) {
             Logger.getLogger(MessageGestion.class.getName()).log(Level.SEVERE, "Erreur", e);
+            deconnecterClient();
+        }
+        finally{
+            interrupt();
         }
     }
 }
