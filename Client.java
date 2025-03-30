@@ -1,6 +1,4 @@
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.security.MessageDigest;
 import java.util.logging.Level;
@@ -9,6 +7,16 @@ import java.util.Scanner;
 
 public class Client {
     private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
+    private static MessageReceptor message_receptor;
+    private static MessageTransmitter message_transmitter;
+
+    public MessageReceptor getMessageReceptor() {
+        return message_receptor;
+    }
+
+    public MessageTransmitter getMessageTransmitter() {
+        return message_transmitter;
+    }
 
     public static void main(String[] args) {
         try {
@@ -18,17 +26,35 @@ public class Client {
             // Connexion effectuee
             System.out.println("Client : Connexion effectuee");
 
+            String pseudo="";
+            boolean unique;
+
+            DataInputStream ins = new DataInputStream(clientSocket.getInputStream());
+            String[] pseudos= ins.readUTF().split("/");
+
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Entrer votre pseudo :");
-            String pseudo = scanner.nextLine();
+            System.out.println("Entrez votre pseudo :");
+
+            do {
+                pseudo=scanner.nextLine();
+                unique=true;
+                for (String pseudo_autre : pseudos) {
+                    if (pseudo.equals(pseudo_autre)) {
+                        unique = false;
+                    }
+                    if (!unique){
+                        System.out.println("Ce pseudo existe déjà, veuillez en entrer un autre :");
+                    }
+                }
+            }while(!unique);
 
             OutputStream out = clientSocket.getOutputStream();
             out.write(pseudo.getBytes());
 
-            MessageReceptor message_receptor = new MessageReceptor(clientSocket);
+            message_receptor = new MessageReceptor(clientSocket);
             message_receptor.start();
 
-            MessageTransmitter message_transmitter = new MessageTransmitter(clientSocket);
+            message_transmitter = new MessageTransmitter(clientSocket);
             message_transmitter.start();
 
         }
