@@ -17,15 +17,31 @@ public class MessageReceptor extends Thread {
             String message;
             int longueur_message;
 
-            while (true) {
-                longueur_message = in.read(stockage_message);
-                message = new String(stockage_message, 0, longueur_message);
-                System.out.println(message);
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    longueur_message = in.read(stockage_message);
+                    if (longueur_message != -1) {
+                        message = new String(stockage_message, 0, longueur_message);
+                        System.out.println(message);
+                    }
+                    else {
+                        interrupt();
+                    }
+                } catch (IOException e) {
+                    System.out.println("Le serveur s'est arrêté.");
+                    interrupt();
+                }
             }
-
         }
         catch (IOException e) {
             Logger.getLogger(MessageReceptor.class.getName()).log(Level.SEVERE, "Erreur", e);
+        }finally {
+            try {
+                client.close();
+            }catch(IOException e){
+                Logger.getLogger(MessageGestion.class.getName()).log(Level.SEVERE, "Erreur", e);
+            }
+            interrupt();
         }
     }
 }
