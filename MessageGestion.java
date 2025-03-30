@@ -19,7 +19,7 @@ public class MessageGestion extends Thread {
     public void deconnecterClient() {
         try {
             Serveur.liste_clients.remove(client);
-            String exitMessage = "   " + pseudo + " a quitté la conversation";
+            String exitMessage = "    " + pseudo + " a quitté la conversation";
             Serveur.diffuserMessage(exitMessage);
 
             client.getOutputStream().close();

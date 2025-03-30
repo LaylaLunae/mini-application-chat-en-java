@@ -21,6 +21,11 @@ public class MessageTransmitter extends Thread {
             while (!Thread.currentThread().isInterrupted()) {
                 message = sc.nextLine();
                 out.write(message.getBytes());
+                if (message.equalsIgnoreCase("exit")) {
+                    client.close();
+                    System.exit(0);
+                    break;
+                }
             }
         }
         catch (IOException e) {
