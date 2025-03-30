@@ -1,3 +1,4 @@
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,6 +13,15 @@ import java.util.Map;
 public class Serveur {
     private static final Logger LOGGER = Logger.getLogger(Serveur.class.getName());
     public static HashMap<Socket, String> liste_clients = new HashMap<>();
+
+    public static String getListePseudos(){
+        String chaine="";
+        for(String pseudo : liste_clients.values()) {
+            chaine += pseudo+"/";
+        }
+        chaine+="";
+        return chaine;
+    }
 
     public static void diffuserMessage(String message) {
         for (Socket client : liste_clients.keySet()) {
@@ -31,13 +41,13 @@ public class Serveur {
             while(true) {
                 Socket clientSocket = serverSocket.accept();
 
+                DataOutputStream outs = new DataOutputStream(clientSocket.getOutputStream());
+                outs.writeUTF(getListePseudos());
+
                 InputStream in = clientSocket.getInputStream();
                 byte[] lecture_pseudo = new byte[1024];
                 int longueur_pseudo = in.read(lecture_pseudo);
                 String pseudo = new String(lecture_pseudo, 0, longueur_pseudo);
-
-                //mettre verification unicité pseudo
-
                 liste_clients.put(clientSocket, pseudo);
 
                 String message = "    " + pseudo + " a rejoint la conversation";
