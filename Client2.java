@@ -5,18 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Scanner;
 
-public class Client2 {
-    private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
-    private static MessageReceptor message_receptor;
-    private static MessageTransmitter message_transmitter;
-
-    public MessageReceptor getMessageReceptor() {
-        return message_receptor;
-    }
-
-    public MessageTransmitter getMessageTransmitter() {
-        return message_transmitter;
-    }
+public class Client {
 
     public static void main(String[] args) {
         try {
@@ -29,28 +18,32 @@ public class Client2 {
             String pseudo="";
             boolean unique;
 
+            //Recuperation de la chaine contenant les pseudos des clients connectés dans un tableau de chaines
             DataInputStream ins = new DataInputStream(clientSocket.getInputStream());
             String[] pseudos= ins.readUTF().split("/");
 
+            //Lecture du pseudo
             Scanner scanner = new Scanner(System.in);
             System.out.println("Entrez votre pseudo :");
 
             do {
                 pseudo=scanner.nextLine();
                 unique=true;
-                for (String pseudo_autre : pseudos) {
+                for (String pseudo_autre : pseudos) { //on teste si le pseudo entré est le même pour chaque pseudo du tableau 
                     if (pseudo.equals(pseudo_autre)) {
                         unique = false;
                     }
-                    if (!unique){
+                    if (!unique){ 
                         System.out.println("Ce pseudo existe déjà, veuillez en entrer un autre :");
                     }
                 }
-            }while(!unique);
+            }while(!unique); // tant que le pseudo existe deja
 
+            //on envoie le pseudo au serveur une fois correct
             OutputStream out = clientSocket.getOutputStream();
             out.write(pseudo.getBytes());
 
+            //Lancement des threads de reception et de transmission des messages 
             message_receptor = new MessageReceptor(clientSocket);
             message_receptor.start();
 
