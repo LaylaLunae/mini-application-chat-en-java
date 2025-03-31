@@ -39,7 +39,7 @@ public class MessageReceptor extends Thread {
             Logger.getLogger(MessageReceptor.class.getName()).log(Level.SEVERE, "Erreur", e);
         }finally {
             try {
-                //on libère la socket
+                //on libère le socket
                 client.close();
             }catch(IOException e){
                 Logger.getLogger(MessageGestion.class.getName()).log(Level.SEVERE, "Erreur", e);
