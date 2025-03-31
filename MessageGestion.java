@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.HashMap;
 
-//Thread qui gère les clients et leurs messages
+//Thread qui gère un client et ses messages
 public class MessageGestion extends Thread {
     private Socket client;
     private String pseudo;
