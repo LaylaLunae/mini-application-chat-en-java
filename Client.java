@@ -52,7 +52,7 @@ public class Client {
 
         }
         catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Erreur", e);
+            Logger.getLogger(MessageGestion.class.getName()).log(Level.SEVERE, "Erreur", e);
         }
     }
 
