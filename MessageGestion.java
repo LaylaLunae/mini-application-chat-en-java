@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.HashMap;
 
+//Thread qui gère un client et ses messages
 public class MessageGestion extends Thread {
     private Socket client;
     private String pseudo;
@@ -16,6 +17,24 @@ public class MessageGestion extends Thread {
         this.pseudo = pseudo;
     }
 
+    //Fonction qui assure la bonne déconnexion du client
+    public void deconnecterClient() {
+        try {
+            //Suppression du client de la liste
+            Serveur.liste_clients.remove(client);
+            String exitMessage = "    " + pseudo + " a quitté la conversation";
+            Serveur.diffuserMessage(exitMessage);
+
+            //Fermeture des entrées/sorties
+            client.getOutputStream().close();
+            client.getInputStream().close();
+            client.close();
+        }catch(IOException e){
+            Logger.getLogger(MessageGestion.class.getName()).log(Level.SEVERE, "Erreur", e);
+        }
+    }
+
+    //Fonction qui est lancée en boucle et qui gère les messages
     @Override
     public void run() {
         try {
@@ -26,25 +45,32 @@ public class MessageGestion extends Thread {
             int longueur_message;
             Boolean client_connecte = true;
 
+            //Tant que le client est connecté, on diffuse son message
             while (client_connecte) {
                 longueur_message = in.read(stockage_message);
-                message_recu = new String(stockage_message, 0, longueur_message);
-
-                if (message_recu.equalsIgnoreCase("exit")) {
-                    Serveur.liste_clients.remove(client);
-                    String exitMessage = "   " + pseudo + " a quitté la conversation";
-                    Serveur.diffuserMessage(exitMessage);
+                if (longueur_message==-1) {
                     client_connecte = false;
+                    deconnecterClient();
                 }
-                else {
-                    message_a_envoye = "    " + pseudo + " a dit : " + message_recu;
-                    Serveur.diffuserMessage(message_a_envoye);
+                else{
+                    message_recu = new String(stockage_message, 0, longueur_message);
+                    //Si le message est "exit", on le déconnecte du serveur
+                    if (message_recu.equalsIgnoreCase("exit")) {
+                        client_connecte = false;
+                        deconnecterClient();
+                    } else {
+                        message_a_envoye = "    " + pseudo + " a dit : " + message_recu;
+                        Serveur.diffuserMessage(message_a_envoye);
+                    }
                 }
             }
-
-            client.close();
         } catch (IOException e) {
             Logger.getLogger(MessageGestion.class.getName()).log(Level.SEVERE, "Erreur", e);
+            deconnecterClient();
+        }
+        finally{
+            //on libere le thread
+            interrupt();
         }
     }
 }

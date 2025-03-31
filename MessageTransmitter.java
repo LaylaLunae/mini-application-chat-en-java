@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Scanner;
 
+//Thread qui gère les messages écrits par le client
 public class MessageTransmitter extends Thread {
     private Socket client;
 
@@ -18,20 +19,31 @@ public class MessageTransmitter extends Thread {
             Scanner sc = new Scanner(System.in);
             String message;
 
-            while (true) {
+            //Tant que le client est connecté, on envoie ses messages
+            while (!Thread.currentThread().isInterrupted()) {
                 message = sc.nextLine();
                 out.write(message.getBytes());
 
+                //si le client a marqué exit, on le déconnecte et on arrête le programme
                 if (message.equalsIgnoreCase("exit")) {
                     client.close();
                     System.exit(0);
                     break;
                 }
             }
-
         }
         catch (IOException e) {
             Logger.getLogger(MessageTransmitter.class.getName()).log(Level.SEVERE, "Erreur", e);
+        }
+        finally {
+            try {
+                //on libère le socket
+                client.close();
+            }catch(IOException e){
+                Logger.getLogger(MessageGestion.class.getName()).log(Level.SEVERE, "Erreur", e);
+            }
+            //on libère le thread
+            interrupt();
         }
     }
 }
