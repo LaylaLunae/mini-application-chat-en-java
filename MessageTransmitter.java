@@ -37,10 +37,12 @@ public class MessageTransmitter extends Thread {
         }
         finally {
             try {
+                //on libère le socket
                 client.close();
             }catch(IOException e){
                 Logger.getLogger(MessageGestion.class.getName()).log(Level.SEVERE, "Erreur", e);
             }
+            //on libère le thread
             interrupt();
         }
     }
