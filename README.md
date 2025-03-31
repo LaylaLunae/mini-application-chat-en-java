@@ -1,11 +1,15 @@
-##Devoir 1 SR03 
+# Devoir 1 SR03 : application de chat avec les sockets
 
+## Auteurs
 Élisa Robeau et Chloe Bolle-Reddat
 
-Vous trouverez sur ce git les 5 classes implementées pour le projet.
-On y trouve les classes Serveur et Client et les 3 Threads : 
-MessageReceptor, MessageTransmitter et MessageGestion.
+## Description
+Vous trouverez sur ce projet les 5 classes implémentées :
+- les classes Serveur et Client
+- les 3 Threads MessageReceptor, MessageTransmitter et MessageGestion.
 
-Le serveur est à éxécuter en premier, puis les différents clients.
+## Exécution du projet
+Le serveur est à exécuter en premier, puis les différents clients.
 
-Bonne reception 
+## Licence
+Projet sous droit d'auteur.
