@@ -69,6 +69,7 @@ public class MessageGestion extends Thread {
             deconnecterClient();
         }
         finally{
+            //on libere le thread
             interrupt();
         }
     }
