@@ -1,11 +1,12 @@
 import java.io.*;
 import java.net.Socket;
-import java.security.MessageDigest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Scanner;
 
-public class Client {
+//La classe Client2 permet de créer un échange entre deux utilisateurs
+public class Client2 {
+    private static final Logger LOGGER = Logger.getLogger(Client2.class.getName());
 
     public static void main(String[] args) {
         try {
@@ -44,10 +45,10 @@ public class Client {
             out.write(pseudo.getBytes());
 
             //Lancement des threads de reception et de transmission des messages 
-            message_receptor = new MessageReceptor(clientSocket);
+            MessageReceptor message_receptor = new MessageReceptor(clientSocket);
             message_receptor.start();
 
-            message_transmitter = new MessageTransmitter(clientSocket);
+            MessageTransmitter message_transmitter = new MessageTransmitter(clientSocket);
             message_transmitter.start();
 
         }
