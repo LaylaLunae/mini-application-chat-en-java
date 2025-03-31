@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.HashMap;
 
+//Thread qui gère les clients et leurs messages
 public class MessageGestion extends Thread {
     private Socket client;
     private String pseudo;
@@ -16,12 +17,15 @@ public class MessageGestion extends Thread {
         this.pseudo = pseudo;
     }
 
+    //Fonction qui assure la bonne déconnexion du client
     public void deconnecterClient() {
         try {
+            //Suppression du client de la liste
             Serveur.liste_clients.remove(client);
             String exitMessage = "    " + pseudo + " a quitté la conversation";
             Serveur.diffuserMessage(exitMessage);
 
+            //Fermeture des entrées/sorties
             client.getOutputStream().close();
             client.getInputStream().close();
             client.close();
@@ -30,6 +34,7 @@ public class MessageGestion extends Thread {
         }
     }
 
+    //Fonction qui est lancée en boucle et qui gère les messages
     @Override
     public void run() {
         try {
@@ -40,6 +45,7 @@ public class MessageGestion extends Thread {
             int longueur_message;
             Boolean client_connecte = true;
 
+            //Tant que le client est connecté, on diffuse son message
             while (client_connecte) {
                 longueur_message = in.read(stockage_message);
                 if (longueur_message==-1) {
@@ -48,6 +54,7 @@ public class MessageGestion extends Thread {
                 }
                 else{
                     message_recu = new String(stockage_message, 0, longueur_message);
+                    //Si le message est "exit", on le déconnecte du serveur
                     if (message_recu.equalsIgnoreCase("exit")) {
                         client_connecte = false;
                         deconnecterClient();
