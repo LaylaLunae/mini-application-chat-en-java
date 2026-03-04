@@ -1,7 +1,7 @@
-# Devoir 1 SR03 : application de chat avec les sockets
+# Application de chat avec les sockets
 
 ## Auteurs
-Élisa Robeau et Chloe Bolle-Reddat
+Elisa Robeau et Chloe Bolle-Reddat
 
 ## Description
 Vous trouverez sur ce projet les 5 classes implémentées :
@@ -12,4 +12,5 @@ Vous trouverez sur ce projet les 5 classes implémentées :
 Le serveur est à exécuter en premier, puis les différents clients.
 
 ## Licence
+
 Projet sous droit d'auteur.
